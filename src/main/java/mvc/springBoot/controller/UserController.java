@@ -1,6 +1,10 @@
 package mvc.springBoot.controller;
 import mvc.springBoot.repository.UserRepository;
-import org.springframework.data.domain.Pageable;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Pageable;
+//import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,16 +22,22 @@ import java.util.List;
 
 @Controller
 public class UserController {
-
     @Autowired
     UserRepository userRepository;
 
     @GetMapping("/")
-    public String allUsers(Model model) {
-        model.addAttribute("usersList", userRepository.findAll());
+    public String allUsers(
+        @RequestParam(defaultValue = "id") String sortby,
+        Model model) {
+        model.addAttribute("usersList", userRepository.findAll(Sort.by(sortby)));
+//        model.asMap().merge()
         return "users";
     }
-
+    @GetMapping("/sortedByAge")
+    public String allUsersSortedByAge(Model model) {
+        model.addAttribute("usersListSorted", userRepository.findAll(Sort.by("age")));
+        return "users";
+    }
     @GetMapping("/signup")
     public String showSignUpForm(User user) {
         return "addPage";
