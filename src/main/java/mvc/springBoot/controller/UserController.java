@@ -17,27 +17,30 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
+
     @Autowired
     UserRepository userRepository;
 
     @GetMapping("/")
     public String allUsers(
-        @RequestParam(defaultValue = "id") String sortby,
-        Model model) {
+        @RequestParam(defaultValue = "id") String sortby, Model model) {
         model.addAttribute("usersList", userRepository.findAll(Sort.by(sortby)));
-//        model.asMap().merge()
         return "users";
     }
-    @GetMapping("/sortedByAge")
+
+    @GetMapping("/sorted")
     public String allUsersSortedByAge(Model model) {
-        model.addAttribute("usersListSorted", userRepository.findAll(Sort.by("age")));
-        return "users";
+//        userRepository.createTable();
+        userRepository.flush();
+        return "usersSorted";
     }
+
     @GetMapping("/signup")
     public String showSignUpForm(User user) {
         return "addPage";
